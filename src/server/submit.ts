@@ -1,10 +1,19 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { processSubmission } from '../src/lib/submissionHandler';
+import { processSubmission } from '../lib/submissionHandler';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Support GET for service health checks
+  if (req.method === 'GET') {
+    return res.status(200).json({
+      status: 'healthy',
+      service: 'SHURUQ Enterprise Brand Discovery Platform API',
+      timestamp: new Date().toISOString(),
+    });
+  }
+
   // Enforce HTTP POST
   if (req.method !== 'POST') {
-    res.setHeader('Allow', ['POST']);
+    res.setHeader('Allow', ['POST', 'GET']);
     return res.status(405).json({
       success: false,
       message: `Method ${req.method} Not Allowed. Use POST.`,

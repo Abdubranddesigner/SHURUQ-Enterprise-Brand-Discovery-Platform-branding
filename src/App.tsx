@@ -198,7 +198,15 @@ export const App: React.FC = () => {
         body: JSON.stringify(payload),
       });
 
-      const data: ApiResponse = await response.json();
+      const contentType = response.headers.get('content-type') || '';
+      let data: ApiResponse;
+
+      if (contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        throw new Error(text || `Server responded with HTTP ${response.status}`);
+      }
 
       if (response.ok && data.success) {
         // Successful SMTP delivery

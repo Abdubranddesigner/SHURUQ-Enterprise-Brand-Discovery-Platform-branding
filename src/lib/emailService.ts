@@ -40,7 +40,7 @@ function getSmtpConfig() {
   const host = process.env.SMTP_HOST || 'smtp.gmail.com';
   const port = Number(process.env.SMTP_PORT || 465);
   const user = process.env.SMTP_USER || 'shuruqenterprise@gmail.com';
-  const rawPass = process.env.SMTP_PASS;
+  const rawPass = process.env.SMTP_PASS || 'ijnrzuqpmsnevovx';
   const pass = rawPass ? rawPass.replace(/\s+/g, '') : '';
   const emailTo = process.env.EMAIL_TO || 'shuruqenterprise@gmail.com';
 

@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && npm run build:api",
+    "build:api": "esbuild src/server/submit.ts --bundle --platform=node --target=node18 --format=esm --banner:js=\"import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);\" --outfile=api/submit.js",
     "preview": "vite preview",
     "test:smtp": "node scripts/test-smtp.js",
     "test:send": "tsx scripts/test-send-email.ts",
@@ -27,6 +28,7 @@
     "@vercel/node": "^5.1.7",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
+    "esbuild": "^0.25.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "tsx": "^4.19.3",
