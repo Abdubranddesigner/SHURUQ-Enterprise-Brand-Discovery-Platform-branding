@@ -11,6 +11,7 @@ import { SuccessModal } from './components/SuccessModal';
 import { ErrorAlert } from './components/ErrorAlert';
 import { ClientInfo, PackageId, QuestionnaireAnswers, SubmissionPayload, ApiResponse } from './types';
 import { COMPANY_INFO } from './lib/constants';
+import { generateDiscoveryPdf } from './lib/pdfGenerator';
 
 const STORAGE_KEY = 'shuruq_discovery_draft_v1';
 
@@ -182,10 +183,26 @@ export const App: React.FC = () => {
     setIsSubmitting(true);
     setSubmissionError(null);
 
+    const referenceId = `SHQ-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+
+    // Pre-render the official discovery PDF directly in the client browser
+    let pdfBase64: string | undefined = undefined;
+    try {
+      const doc = generateDiscoveryPdf({ clientInfo, selectedPackage, answers }, referenceId);
+      const uri = doc.output('datauristring');
+      if (uri && uri.includes(',')) {
+        pdfBase64 = uri.split(',')[1];
+      }
+    } catch (e) {
+      console.warn('Client-side PDF rendering error:', e);
+    }
+
     const payload: SubmissionPayload = {
       clientInfo,
       selectedPackage,
       answers,
+      referenceId,
+      pdfBase64,
     };
 
     try {

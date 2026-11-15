@@ -168,6 +168,14 @@ export function validateAndSanitizePayload(body: unknown): {
     return { valid: false, errors };
   }
 
+  // Preserve pre-rendered PDF attachment if provided from client
+  const pdfBase64 = typeof raw.pdfBase64 === 'string' && raw.pdfBase64.length > 50
+    ? raw.pdfBase64
+    : undefined;
+  const referenceId = typeof raw.referenceId === 'string' && raw.referenceId.trim().length > 3
+    ? raw.referenceId.trim().slice(0, 50)
+    : undefined;
+
   const sanitized: SubmissionPayload = {
     clientInfo: {
       fullName,
@@ -185,6 +193,8 @@ export function validateAndSanitizePayload(body: unknown): {
       inspirationUrls: sanitizedUrls,
       q13, q14, q15,
     },
+    pdfBase64,
+    referenceId,
   };
 
   return { valid: true, errors: [], sanitized };

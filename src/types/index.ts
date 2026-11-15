@@ -51,6 +51,8 @@ export interface SubmissionPayload {
   clientInfo: ClientInfo;
   selectedPackage: PackageId;
   answers: QuestionnaireAnswers;
+  pdfBase64?: string;
+  referenceId?: string;
 }
 
 export interface ApiResponse<T = unknown> {

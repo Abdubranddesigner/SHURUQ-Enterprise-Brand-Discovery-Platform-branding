@@ -1,7 +1,6 @@
 import nodemailer from 'nodemailer';
 import { SubmissionPayload } from '../types';
 import { OFFICIAL_PACKAGES, COMPANY_INFO } from './constants';
-import { generateDiscoveryPdf } from './pdfGenerator';
 
 /**
  * Escapes HTML characters in user inputs to prevent HTML/script injection
@@ -494,7 +493,7 @@ export async function sendSubmissionEmail(payload: SubmissionPayload): Promise<{
   const config = getSmtpConfig();
   const transporter = getTransporter();
 
-  const referenceId = `SHQ-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+  const referenceId = payload.referenceId || `SHQ-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
   const now = new Date();
   const timestamp = now.toLocaleString('en-US', {
     dateStyle: 'full',
@@ -506,20 +505,21 @@ export async function sendSubmissionEmail(payload: SubmissionPayload): Promise<{
   const htmlContent = generateEmailHtml(payload, referenceId, timestamp);
   const textContent = generateEmailText(payload, referenceId, timestamp);
 
-  // Generate official Brand Discovery PDF attachment
+  // Attach official Brand Discovery PDF if generated from client
   let attachments: nodemailer.SendMailOptions['attachments'] = undefined;
-  try {
-    const pdfDoc = generateDiscoveryPdf(payload, referenceId);
-    const pdfBuffer = Buffer.from(pdfDoc.output('arraybuffer'));
-    attachments = [
-      {
-        filename: `SHURUQ-Brand-Discovery-${referenceId}.pdf`,
-        content: pdfBuffer,
-        contentType: 'application/pdf',
-      },
-    ];
-  } catch (pdfErr) {
-    console.warn('Could not generate PDF attachment for email:', pdfErr);
+  if (payload.pdfBase64) {
+    try {
+      const pdfBuffer = Buffer.from(payload.pdfBase64, 'base64');
+      attachments = [
+        {
+          filename: `SHURUQ-Brand-Discovery-${referenceId}.pdf`,
+          content: pdfBuffer,
+          contentType: 'application/pdf',
+        },
+      ];
+    } catch (pdfErr) {
+      console.warn('Could not parse PDF buffer for email attachment:', pdfErr);
+    }
   }
 
   const mailOptions: nodemailer.SendMailOptions = {
