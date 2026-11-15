@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test:smtp": "node scripts/test-smtp.js"
+    "test:smtp": "node scripts/test-smtp.js",
+    "test:send": "node scripts/test-send-email.js"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
