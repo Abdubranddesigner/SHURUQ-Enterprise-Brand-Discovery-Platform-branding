@@ -1,7 +1,8 @@
-import React from 'react';
-import { CheckCircle2, MessageSquare, ArrowRight, Download, RotateCcw } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { CheckCircle2, MessageSquare, ArrowRight, Download, RotateCcw, FileText, Check } from 'lucide-react';
 import { ClientInfo, PackageId, QuestionnaireAnswers } from '../types';
 import { OFFICIAL_PACKAGES, COMPANY_INFO } from '../lib/constants';
+import { downloadDiscoveryPdf } from '../lib/pdfGenerator';
 
 interface SuccessModalProps {
   referenceId: string;
@@ -18,13 +19,33 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({
   answers,
   onReset,
 }) => {
+  const [downloaded, setDownloaded] = useState<boolean>(false);
   const pkg = OFFICIAL_PACKAGES[selectedPackage] || OFFICIAL_PACKAGES.pro;
+
+  // Automatically trigger PDF download on mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      try {
+        downloadDiscoveryPdf({ clientInfo, selectedPackage, answers }, referenceId);
+        setDownloaded(true);
+      } catch (e) {
+        console.warn('Auto PDF download trigger error:', e);
+      }
+    }, 600);
+
+    return () => clearTimeout(timer);
+  }, [clientInfo, selectedPackage, answers, referenceId]);
+
+  const handleManualPdfDownload = () => {
+    downloadDiscoveryPdf({ clientInfo, selectedPackage, answers }, referenceId);
+    setDownloaded(true);
+  };
 
   const whatsappMessage = encodeURIComponent(
     `Hello SHURUQ Enterprise! I have just submitted my Brand Discovery Questionnaire for "${clientInfo.businessName}" (Reference ID: ${referenceId}, Package: ${pkg.name}). Looking forward to starting our branding journey!`
   );
 
-  const handleDownloadBackup = () => {
+  const handleDownloadJsonBackup = () => {
     const backupData = {
       referenceId,
       timestamp: new Date().toISOString(),
@@ -61,6 +82,23 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({
         </p>
       </div>
 
+      {/* PDF Download Notice */}
+      <div className="bg-emerald-950/40 border border-emerald-500/40 rounded-xl p-3.5 flex items-center justify-center gap-2.5 text-xs text-emerald-300">
+        {downloaded ? (
+          <>
+            <Check className="w-4 h-4 text-emerald-400 stroke-[3]" />
+            <span>
+              Your official <strong>Brand Discovery PDF</strong> has been automatically downloaded to your device.
+            </span>
+          </>
+        ) : (
+          <>
+            <FileText className="w-4 h-4 text-shuruq-gold" />
+            <span>Generating and downloading your official Brand Discovery PDF...</span>
+          </>
+        )}
+      </div>
+
       {/* Reference Card */}
       <div className="bg-shuruq-bg border border-shuruq-border rounded-xl p-4 sm:p-5 text-left max-w-md mx-auto space-y-2.5">
         <div className="flex items-center justify-between text-xs border-b border-shuruq-border pb-2">
@@ -94,13 +132,25 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({
           <ArrowRight className="w-4 h-4" />
         </a>
 
+        {/* Manual PDF download button */}
         <button
           type="button"
-          onClick={handleDownloadBackup}
-          className="w-full sm:w-auto px-5 py-3 rounded-xl bg-shuruq-surfaceLight hover:bg-shuruq-surfaceElevated border border-shuruq-border text-shuruq-textSecondary hover:text-white font-semibold text-sm flex items-center justify-center gap-2 transition-all"
+          onClick={handleManualPdfDownload}
+          className="w-full sm:w-auto px-5 py-3 rounded-xl bg-shuruq-surfaceElevated hover:bg-shuruq-surfaceLight border border-shuruq-borderGold text-shuruq-gold font-semibold text-sm flex items-center justify-center gap-2 transition-all"
         >
           <Download className="w-4 h-4" />
-          <span>Download Summary (.json)</span>
+          <span>Download PDF (.pdf)</span>
+        </button>
+
+        {/* JSON download button */}
+        <button
+          type="button"
+          onClick={handleDownloadJsonBackup}
+          className="w-full sm:w-auto px-4 py-3 rounded-xl bg-shuruq-surfaceLight hover:bg-shuruq-surfaceElevated border border-shuruq-border text-shuruq-textSecondary hover:text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all"
+          title="Download JSON data"
+        >
+          <FileText className="w-4 h-4" />
+          <span>JSON</span>
         </button>
       </div>
 
