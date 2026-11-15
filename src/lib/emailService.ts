@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import { SubmissionPayload } from '../types';
 import { OFFICIAL_PACKAGES, COMPANY_INFO } from './constants';
+import { generateDiscoveryPdf } from './pdfGenerator';
 
 /**
  * Escapes HTML characters in user inputs to prevent HTML/script injection
@@ -505,6 +506,22 @@ export async function sendSubmissionEmail(payload: SubmissionPayload): Promise<{
   const htmlContent = generateEmailHtml(payload, referenceId, timestamp);
   const textContent = generateEmailText(payload, referenceId, timestamp);
 
+  // Generate official Brand Discovery PDF attachment
+  let attachments: nodemailer.SendMailOptions['attachments'] = undefined;
+  try {
+    const pdfDoc = generateDiscoveryPdf(payload, referenceId);
+    const pdfBuffer = Buffer.from(pdfDoc.output('arraybuffer'));
+    attachments = [
+      {
+        filename: `SHURUQ-Brand-Discovery-${referenceId}.pdf`,
+        content: pdfBuffer,
+        contentType: 'application/pdf',
+      },
+    ];
+  } catch (pdfErr) {
+    console.warn('Could not generate PDF attachment for email:', pdfErr);
+  }
+
   const mailOptions: nodemailer.SendMailOptions = {
     from: `SHURUQ Enterprise <${config.user}>`,
     to: config.emailTo,
@@ -516,6 +533,7 @@ export async function sendSubmissionEmail(payload: SubmissionPayload): Promise<{
       'X-Entity-Ref-ID': referenceId,
       'X-Application': 'SHURUQ Enterprise Brand Discovery Platform',
     },
+    attachments,
   };
 
   try {
