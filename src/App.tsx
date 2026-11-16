@@ -9,8 +9,9 @@ import { StepVisualDirection } from './components/StepVisualDirection';
 import { StepProjectRequirements } from './components/StepProjectRequirements';
 import { SuccessModal } from './components/SuccessModal';
 import { ErrorAlert } from './components/ErrorAlert';
+import { Footer } from './components/Footer';
 import { ClientInfo, PackageId, QuestionnaireAnswers, SubmissionPayload, ApiResponse } from './types';
-import { COMPANY_INFO, STORAGE_KEY } from './lib/constants';
+import { STORAGE_KEY } from './lib/constants';
 import { generateDiscoveryPdf } from './lib/pdfGenerator';
 
 const INITIAL_CLIENT_INFO: ClientInfo = {
@@ -426,19 +427,8 @@ export const App: React.FC = () => {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-shuruq-border bg-shuruq-surface/50 py-6 mt-12 text-center text-xs text-shuruq-textMuted">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div>
-            &copy; {new Date().getFullYear()} <strong className="text-shuruq-gold">{COMPANY_INFO.name}</strong>. All rights reserved.
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-shuruq-textSecondary">Direct Line: {COMPANY_INFO.directLine}</span>
-            <span>&bull;</span>
-            <span className="text-shuruq-textSecondary">{COMPANY_INFO.email}</span>
-          </div>
-        </div>
-      </footer>
+      {/* Enhanced Footer with Social Channels */}
+      <Footer />
     </div>
   );
 };

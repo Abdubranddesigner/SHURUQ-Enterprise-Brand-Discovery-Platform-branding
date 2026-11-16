@@ -48,6 +48,39 @@ export const OFFICIAL_PACKAGES: Record<PackageId, PackageDetails> = {
   },
 };
 
+export const SOCIAL_LINKS = [
+  {
+    name: 'LinkedIn',
+    url: 'https://www.linkedin.com/company/shuruq-enterprise',
+    handle: 'SHURUQ Enterprise',
+  },
+  {
+    name: 'Instagram',
+    url: 'https://www.instagram.com/shuruqenterprise',
+    handle: '@shuruqenterprise',
+  },
+  {
+    name: 'Facebook',
+    url: 'https://www.facebook.com/shuruqenterprise',
+    handle: 'SHURUQ Enterprise',
+  },
+  {
+    name: 'TikTok',
+    url: 'https://www.tiktok.com/@shuruqenterprise',
+    handle: '@shuruqenterprise',
+  },
+  {
+    name: 'YouTube',
+    url: 'https://www.youtube.com/@shuruqenterprise',
+    handle: '@shuruqenterprise',
+  },
+  {
+    name: 'Telegram',
+    url: 'https://t.me/shuruqenterprise',
+    handle: '@shuruqenterprise',
+  },
+] as const;
+
 export const COMPANY_INFO = {
   name: 'SHURUQ ENTERPRISE',
   tagline: 'Empowering Ideas. Building the Future.',
@@ -55,6 +88,7 @@ export const COMPANY_INFO = {
   whatsappNumber: '251955303950',
   whatsappUrl: 'https://wa.me/251955303950',
   email: 'shuruqenterprise@gmail.com',
+  socials: SOCIAL_LINKS,
 };
 
 export const QUESTION_DEFINITIONS = [
