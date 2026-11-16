@@ -2,6 +2,13 @@ import React from 'react';
 import { Phone, Mail, ShieldCheck, Linkedin, Instagram, Facebook, Youtube } from 'lucide-react';
 import { COMPANY_INFO, SOCIAL_LINKS } from '../lib/constants';
 
+// Clean SVG icon for X (Twitter)
+const XIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+);
+
 // Clean SVG icon for TikTok
 const TikTokIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
@@ -25,6 +32,10 @@ export const Footer: React.FC = () => {
         return <Instagram className="w-4 h-4" />;
       case 'Facebook':
         return <Facebook className="w-4 h-4" />;
+      case 'X (Twitter)':
+      case 'Twitter':
+      case 'X':
+        return <XIcon className="w-4 h-4" />;
       case 'TikTok':
         return <TikTokIcon className="w-4 h-4" />;
       case 'YouTube':
@@ -85,21 +96,21 @@ export const Footer: React.FC = () => {
             </div>
 
             {/* Social Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-1">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 pt-1">
               {SOCIAL_LINKS.map((social) => (
                 <a
                   key={social.name}
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-shuruq-bg border border-shuruq-border hover:border-shuruq-gold/60 hover:bg-shuruq-gold/10 text-shuruq-textSecondary hover:text-shuruq-gold transition-all duration-200 group"
+                  className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-shuruq-bg border border-shuruq-border hover:border-shuruq-gold/60 hover:bg-shuruq-gold/10 text-shuruq-textSecondary hover:text-shuruq-gold transition-all duration-200 group"
                   title={`${social.name} - ${social.handle}`}
                 >
-                  <span className="text-shuruq-textMuted group-hover:text-shuruq-gold transition-colors">
+                  <span className="text-shuruq-textMuted group-hover:text-shuruq-gold transition-colors flex-shrink-0">
                     {getSocialIcon(social.name)}
                   </span>
-                  <div className="text-left overflow-hidden">
-                    <span className="block text-xs font-semibold text-white group-hover:text-shuruq-gold transition-colors leading-tight">
+                  <div className="text-left overflow-hidden min-w-0">
+                    <span className="block text-xs font-semibold text-white group-hover:text-shuruq-gold transition-colors leading-tight truncate">
                       {social.name}
                     </span>
                     <span className="block text-[10px] text-shuruq-textMuted truncate">

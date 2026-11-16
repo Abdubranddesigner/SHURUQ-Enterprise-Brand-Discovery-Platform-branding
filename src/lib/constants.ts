@@ -75,6 +75,11 @@ export const SOCIAL_LINKS = [
     handle: '@shuruqenterprise',
   },
   {
+    name: 'X (Twitter)',
+    url: 'https://x.com/shuruqenterprise',
+    handle: '@shuruqenterprise',
+  },
+  {
     name: 'Telegram',
     url: 'https://t.me/shuruqenterprise',
     handle: '@shuruqenterprise',
