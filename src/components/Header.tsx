@@ -1,34 +1,52 @@
 import React from 'react';
 import { Phone, MessageSquare, ShieldCheck } from 'lucide-react';
-import { COMPANY_INFO } from '../lib/constants';
+import { COMPANY_INFO, STORAGE_KEY } from '../lib/constants';
 
-export const Header: React.FC = () => {
+interface HeaderProps {
+  onRestart?: () => void;
+}
+
+export const Header: React.FC<HeaderProps> = ({ onRestart }) => {
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (onRestart) {
+      onRestart();
+    } else {
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (err) {
+        console.warn('Could not clear local draft storage:', err);
+      }
+      window.location.href = '/';
+    }
+  };
+
   return (
     <header className="border-b border-shuruq-border bg-shuruq-surface/90 backdrop-blur-md sticky top-0 z-40">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3">
-        {/* Logo & Wordmark */}
-        <div className="flex items-center gap-3.5">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+        {/* Clickable Brand Logo - Refreshes & Restarts */}
+        <button
+          type="button"
+          onClick={handleLogoClick}
+          className="flex items-center gap-3.5 text-left cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-shuruq-gold rounded-lg p-1 -m-1 transition-all active:scale-[0.98]"
+          title="SHURUQ Enterprise - Click to refresh and restart"
+        >
           <img
-            src="/logos/Asset 11.svg"
+            src="/logos/shuruq-logo.png"
             alt="SHURUQ Enterprise Logo"
-            className="h-10 w-auto object-contain rounded"
+            className="h-8 sm:h-10 w-auto object-contain transition-opacity duration-200 group-hover:opacity-90"
           />
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold tracking-widest text-shuruq-gold text-lg sm:text-xl font-['Montserrat']">
-                SHURUQ
-              </span>
-              <span className="text-xs tracking-[0.25em] text-shuruq-textSecondary font-semibold uppercase">
-                ENTERPRISE
-              </span>
-            </div>
-            <p className="text-[11px] text-shuruq-textMuted tracking-wider font-medium">
-              Brand Discovery & Client Onboarding
-            </p>
+          <div className="hidden sm:block border-l border-shuruq-border pl-3 text-left">
+            <span className="block text-[11px] font-bold uppercase tracking-wider text-shuruq-gold group-hover:text-amber-300 transition-colors">
+              Brand Discovery
+            </span>
+            <span className="block text-[10px] text-shuruq-textMuted font-medium tracking-normal">
+              Client Onboarding Platform
+            </span>
           </div>
-        </div>
+        </button>
 
-        {/* Direct Contact & Status */}
+        {/* Direct Contact & Security Status */}
         <div className="flex items-center gap-3 text-xs">
           <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-shuruq-bg border border-shuruq-border text-shuruq-textSecondary">
             <ShieldCheck className="w-3.5 h-3.5 text-shuruq-gold" />

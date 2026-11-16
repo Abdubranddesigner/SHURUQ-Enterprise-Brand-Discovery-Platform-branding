@@ -1,5 +1,7 @@
 import { PackageDetails, PackageId } from '../types';
 
+export const STORAGE_KEY = 'shuruq_discovery_draft_v1';
+
 export const OFFICIAL_PACKAGES: Record<PackageId, PackageDetails> = {
   basic: {
     id: 'basic',

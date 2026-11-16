@@ -10,10 +10,8 @@ import { StepProjectRequirements } from './components/StepProjectRequirements';
 import { SuccessModal } from './components/SuccessModal';
 import { ErrorAlert } from './components/ErrorAlert';
 import { ClientInfo, PackageId, QuestionnaireAnswers, SubmissionPayload, ApiResponse } from './types';
-import { COMPANY_INFO } from './lib/constants';
+import { COMPANY_INFO, STORAGE_KEY } from './lib/constants';
 import { generateDiscoveryPdf } from './lib/pdfGenerator';
-
-const STORAGE_KEY = 'shuruq_discovery_draft_v1';
 
 const INITIAL_CLIENT_INFO: ClientInfo = {
   fullName: '',
@@ -258,10 +256,25 @@ export const App: React.FC = () => {
     setSubmissionError(null);
   };
 
+  const handleRestart = () => {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {}
+    setSuccessResponse(null);
+    setClientInfo(INITIAL_CLIENT_INFO);
+    setSelectedPackage('pro');
+    setAnswers(INITIAL_ANSWERS);
+    setCurrentStep(1);
+    setCompletedSteps([]);
+    setFieldErrors({});
+    setSubmissionError(null);
+    window.location.href = '/';
+  };
+
   return (
     <div className="min-h-screen bg-shuruq-bg text-shuruq-textPrimary flex flex-col justify-between">
-      {/* Navigation Header */}
-      <Header />
+      {/* Navigation Header with Restart Handler */}
+      <Header onRestart={handleRestart} />
 
       {/* Main Content Area */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex-1 w-full">
